@@ -23,7 +23,7 @@ class CreateContactsTable extends Migration
             $table->string('phone_number')->nullable();
             $table->text('note')->nullable();
             $table->tinyInteger('status')->default('0');
-            $table->tinyInteger('type')->default(0);
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }
