@@ -3,6 +3,8 @@
 namespace VCComponent\Laravel\Contact\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use VCComponent\Laravel\Contact\Contacts\Contact;
+use VCComponent\Laravel\Contact\Contacts\Contracts\Contact as ContractsContact;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Repositories\ContactRepositoryEloquent;
 
@@ -31,5 +33,18 @@ class ContactServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(ContactRepository::class, ContactRepositoryEloquent::class);
+
+        $this->app->singleton('moduleContact.contact', function () {
+            return new Contact();
+        });
+
+        $this->app->bind(ContractsContact::class, 'moduleContact.contact');
+    }
+    public function provides()
+    {
+        return [
+            ContractsContact::class,
+            'moduleProduct.product',
+        ];
     }
 }
