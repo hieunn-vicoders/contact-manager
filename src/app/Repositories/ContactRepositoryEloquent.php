@@ -20,7 +20,11 @@ class ContactRepositoryEloquent extends BaseRepository implements ContactReposit
      */
     public function model()
     {
-        return Contact::class;
+        if (isset(config('contact.models')['contact'])) {
+            return config('contact.models.contact');
+        } else {
+            return Contact::class;
+        }
     }
 
     public function getEntity()
