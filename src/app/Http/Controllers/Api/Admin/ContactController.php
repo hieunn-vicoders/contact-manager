@@ -76,6 +76,11 @@ class ContactController extends ApiController
     public function index(Request $request)
     {
         $query = $this->entity->query();
+
+        if (method_exists($this, 'withQuery')) {
+            $query = $this->withQuery($query);
+        }
+
         $query = $this->getStatus($request, $query);
         $query = $this->getType($request, $query);
 
@@ -91,6 +96,11 @@ class ContactController extends ApiController
 
     function list(Request $request) {
         $query = $this->entity->query();
+
+        if (method_exists($this, 'withQuery')) {
+            $query = $this->withQuery($query);
+        }
+
         $query = $this->getStatus($request, $query);
         $query = $this->getType($request, $query);
 
