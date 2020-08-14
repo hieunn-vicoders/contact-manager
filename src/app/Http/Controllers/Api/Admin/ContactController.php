@@ -29,7 +29,7 @@ class ContactController extends ApiController
             $this->transformer = ContactTransformer::class;
         }
 
-        if (config('contact.auth_middleware.admin') !== '') {
+        if (!empty(config('contact.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToUse($user)) {
                 throw new PermissionDeniedException();
