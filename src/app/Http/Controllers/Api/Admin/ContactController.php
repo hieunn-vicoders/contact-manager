@@ -8,6 +8,7 @@ use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
+use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 class ContactController extends ApiController
 {
@@ -27,7 +28,19 @@ class ContactController extends ApiController
         } else {
             $this->transformer = ContactTransformer::class;
         }
+
+        if (config('contact.auth_middleware.admin') !== '') {
+            $user = $this->getAuthenticatedUser();
+            if (!$this->entity->ableToUse($user)) {
+                throw new PermissionDeniedException();
+            }
+
+            foreach (config('contact.auth_middleware.admin') as $middleware) {
+                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
+            }
+        }
     }
+
     public function getStatus($request, $query)
     {
 
@@ -43,6 +56,7 @@ class ContactController extends ApiController
 
         return $query;
     }
+
     public function getType($request, $query)
     {
 
@@ -79,7 +93,6 @@ class ContactController extends ApiController
         $query = $this->entity->query();
         $query = $this->getStatus($request, $query);
         $query = $this->getType($request, $query);
-
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['email', 'full_name', 'first_name', 'last_name'], $request);

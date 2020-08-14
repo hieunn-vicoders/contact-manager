@@ -17,4 +17,10 @@ class Contact extends Model
         'type',
         'status',
     ];
+
+    public function ableToUse($user)
+    {
+        return true;
+    }
+
 }

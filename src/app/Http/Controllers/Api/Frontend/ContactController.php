@@ -7,6 +7,7 @@ use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
+use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 class ContactController extends ApiController
 {
@@ -25,6 +26,17 @@ class ContactController extends ApiController
             $this->transformer = config('contact.transformers.contact');
         } else {
             $this->transformer = ContactTransformer::class;
+        }
+
+        if (config('contact.auth_middleware.frontend') !== '') {
+            $user = $this->getAuthenticatedUser();
+            if (!$this->entity->ableToUse($user)) {
+                throw new PermissionDeniedException();
+            }
+
+            foreach (config('contact.auth_middleware.frontend') as $middleware) {
+                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
+            }
         }
     }
 
