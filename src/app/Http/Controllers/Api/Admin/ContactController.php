@@ -72,6 +72,66 @@ class ContactController extends ApiController
 
         return $query;
     }
+    public function export(Request $request)
+    {
+
+        // $user = $this->getAuthenticatedUser();
+        // if (!$this->entity->ableToViewList($user)) {
+        //     throw new PermissionDeniedException();
+        // }
+
+        // $this->validator->isValid($request, 'RULE_EXPORT');
+
+        $data   = $request->all();
+        $orders = $this->getReportOrders($request);
+
+        $args = [
+            'data'      => $orders,
+            'label'     => $request->label ? $data['label'] : 'Orders',
+            'extension' => $request->extension ? $data['extension'] : 'Xlsx',
+        ];
+        $export = new Export($args);
+        $url    = $export->export();
+
+        return $this->response->array(['url' => $url]);
+    }
+
+    private function getReportOrders(Request $request)
+    {
+        $fields = [
+            'contacts.email as `Email`',
+            'contacts.full_name as `Họ và tên',
+            'contacts.first_name as `Tên`',
+            'contacts.last_name as `Họ',
+            'contacts.phone_number as `Số điện thoại',
+            'contacts.address as `Địa chỉ chi tiết`',
+            'contacts.province as `Thành phố',
+            'contacts.district as `Quận',
+            'contacts.ward as `Phường',
+            'contacts.note as `Ghi chú`',
+            // 'orders.status as `Trạng thái đơn hàng`',
+            // '(case when status = 1 then "Đã Export"  when export_status = 0 then "Chưa Export" end) as `Trạng Thái Export`',
+            // 'users.username as `Người tạo`',
+
+        ];
+        $fields = implode(', ', $fields);
+
+        $query = $this->entity->query();
+        $query = $this->getStatus($request, $query);
+        $query = $this->getType($request, $query);
+
+        $query = $this->getFromDate($request, $query);
+        $query = $this->getToDate($request, $query);
+
+        $query = $this->applyConstraintsFromRequest($query, $request);
+        $query = $this->applySearchFromRequest($query, ['email', 'full_name', 'first_name', 'last_name'], $request);
+        $query = $this->applyOrderByFromRequest($query, $request);
+
+
+        $products = $query->get()->toArray();
+
+        return $products;
+    }
 
     public function index(Request $request)
     {
@@ -155,5 +215,49 @@ class ContactController extends ApiController
     {
         $this->repository->updateStatus($request, $id);
         return $this->success();
+    }
+    public function fomatDate($date)
+    {
+
+        $fomatDate = Carbon::createFromFormat('Y-m-d', $date);
+
+        return $fomatDate;
+    }
+
+    public function field($request)
+    {
+        if ($request->has('field')) {
+            if ($request->field === 'updated') {
+                $field = 'contacts.updated_at';
+            } elseif ($request->field === 'published') {
+                $field = 'contacts.published_date';
+            } elseif ($request->field === 'created') {
+                $field = 'contacts.created_at';
+            }
+            return $field;
+        } else {
+            throw new Exception('field requied');
+        }
+    }
+
+    public function getFromDate($request, $query)
+    {
+        if ($request->has('from')) {
+
+            $field     = $this->field($request);
+            $form_date = $this->fomatDate($request->from);
+            $query     = $query->whereDate($field, '>=', $form_date);
+        }
+        return $query;
+    }
+
+    public function getToDate($request, $query)
+    {
+        if ($request->has('to')) {
+            $field   = $this->field($request);
+            $to_date = $this->fomatDate($request->to);
+            $query   = $query->whereDate($field, '<=', $to_date);
+        }
+        return $query;
     }
 }

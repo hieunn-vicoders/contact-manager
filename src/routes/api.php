@@ -7,6 +7,7 @@ $api->version('v1', function ($api) {
         $api->resource('contacts', 'VCComponent\Laravel\Contact\Http\Controllers\Api\Frontend\ContactController');
 
         $api->group(['prefix' => 'admin'], function ($api) {
+            $api->get('contacts/exports', 'VCComponent\Laravel\Contact\Http\Controllers\Api\Admin\ContactController@export');
             $api->put('contacts/status/bulk', 'VCComponent\Laravel\Contact\Http\Controllers\Api\Admin\ContactController@bulkUpdateStatus');
             $api->put('contacts/status/{id}', 'VCComponent\Laravel\Contact\Http\Controllers\Api\Admin\ContactController@updateStatus');
             $api->resource('contacts', 'VCComponent\Laravel\Contact\Http\Controllers\Api\Admin\ContactController');
