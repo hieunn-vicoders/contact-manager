@@ -17,5 +17,9 @@ class ContactValidator extends AbstractValidator
         ValidatorInterface::RULE_CREATE => [
             'email' => ['required'],
         ],
+        'RULE_EXPORT'                          => [
+            'label'     => ['required'],
+            'extension' => ['required', 'regex:/(^xlsx$)|(^csv$)/'],
+        ],
     ];
 }
