@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
+use VCComponent\Laravel\Export\Services\Export\Export;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
@@ -75,15 +76,15 @@ class ContactController extends ApiController
     public function export(Request $request)
     {
 
-        // $user = $this->getAuthenticatedUser();
+        $user = $this->getAuthenticatedUser();
         // if (!$this->entity->ableToViewList($user)) {
         //     throw new PermissionDeniedException();
         // }
 
-        // $this->validator->isValid($request, 'RULE_EXPORT');
+        $this->validator->isValid($request, 'RULE_EXPORT');
 
         $data   = $request->all();
-        $orders = $this->getReportOrders($request);
+        $orders = $this->getReportContacts($request);
 
         $args = [
             'data'      => $orders,
@@ -96,7 +97,7 @@ class ContactController extends ApiController
         return $this->response->array(['url' => $url]);
     }
 
-    private function getReportOrders(Request $request)
+    private function getReportContacts(Request $request)
     {
         $fields = [
             'contacts.email as `Email`',
@@ -126,7 +127,6 @@ class ContactController extends ApiController
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['email', 'full_name', 'first_name', 'last_name'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
-
 
         $products = $query->get()->toArray();
 
