@@ -4,6 +4,7 @@ namespace VCComponent\Laravel\Contact\Http\Controllers\Api\Admin;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
@@ -118,6 +119,7 @@ class ContactController extends ApiController
         $fields = implode(', ', $fields);
 
         $query = $this->entity->query();
+        $query         = $query->select(DB::raw($fields));
         $query = $this->getStatus($request, $query);
         $query = $this->getType($request, $query);
 
