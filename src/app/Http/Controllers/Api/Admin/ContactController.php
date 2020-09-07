@@ -108,7 +108,7 @@ class ContactController extends ApiController
             'contacts.last_name as `Họ`',
             'contacts.phone_number as `Số điện thoại`',
             'contacts.address as `Địa chỉ chi tiết`',
-            'contacts.province as `Thành phố`',
+            'contacts.province as `Thành phố`'  ,
             'contacts.district as `Quận`',
             'contacts.ward as `Phường`',
             'contacts.note as `Ghi chú`',

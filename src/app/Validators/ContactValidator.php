@@ -9,13 +9,13 @@ class ContactValidator extends AbstractValidator
 {
     protected $rules = [
         ValidatorInterface::RULE_ADMIN_CREATE => [
-            'email' => ['required'],
+            'email' => ['email'],
         ],
         ValidatorInterface::RULE_ADMIN_UPDATE => [
-            'email' => ['required'],
+            'email' => ['email'],
         ],
         ValidatorInterface::RULE_CREATE => [
-            'email' => ['required'],
+            'email' => ['email'],
         ],
         'RULE_EXPORT'                          => [
             'label'     => ['required'],
