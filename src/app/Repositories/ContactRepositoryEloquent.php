@@ -50,7 +50,7 @@ class ContactRepositoryEloquent extends BaseRepository implements ContactReposit
             throw new NotFoundException("contacts");
         }
 
-        $result = $this->whereIn("id", $request->ids)->update(['status' => $data['status']]);
+        $result = $this->getEntity()->whereIn("id", $request->ids)->update(['status' => $data['status']]);
 
         return $result;
     }
