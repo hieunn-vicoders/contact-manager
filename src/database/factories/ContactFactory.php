@@ -12,5 +12,6 @@ $factory->define(Contact::class, function (Generator $faker) {
         'first_name' => $firstName,
         'last_name'  => $lastName,
         'address'    => $faker->address,
+        'status'     => 1,
     ];
 });
