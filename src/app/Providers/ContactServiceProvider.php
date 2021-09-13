@@ -5,6 +5,8 @@ namespace VCComponent\Laravel\Contact\Providers;
 use Illuminate\Support\ServiceProvider;
 use VCComponent\Laravel\Contact\Contacts\Contact;
 use VCComponent\Laravel\Contact\Contacts\Contracts\Contact as ContractsContact;
+use VCComponent\Laravel\Contact\Contracts\ContactPolicyInterface;
+use VCComponent\Laravel\Contact\Policies\ContactPolicy;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Repositories\ContactRepositoryEloquent;
 
@@ -39,6 +41,8 @@ class ContactServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(ContractsContact::class, 'moduleContact.contact');
+        $this->app->bind(ContactPolicyInterface::class, ContactPolicy::class);
+        $this->app->register(ContactAuthServiceProvider::class);
     }
     public function provides()
     {

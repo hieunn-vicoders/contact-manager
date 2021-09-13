@@ -110,6 +110,7 @@ class TestCase extends OrchestraTestCase
                 ],
             ],
         ]);
+        $app['config']->set('repository.cache.enabled', false);
     }
 
     public function assertValidation($response, $field, $error_message)

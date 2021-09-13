@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
@@ -33,7 +34,7 @@ class ContactController extends ApiController
         }
         if (!empty(config('contact.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUse($user)) {
+            if (Gate::forUser($user)->denies('manage-contact')) {
                 throw new PermissionDeniedException();
             }
 
