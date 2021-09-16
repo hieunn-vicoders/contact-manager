@@ -4,6 +4,8 @@ namespace VCComponent\Laravel\Contact\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use VCComponent\Laravel\Contact\Contracts\ContactPolicyInterface;
+use VCComponent\Laravel\Contact\Entities\Contact;
 
 class ContactAuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class ContactAuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        //
+        Contact::class => ContactPolicyInterface::class,
     ];
 
     /**
@@ -24,8 +26,6 @@ class ContactAuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        
-        Gate::define('manage-contact', 'VCComponent\Laravel\Contact\Contracts\ContactPolicyInterface@ableToUse');
         //
     }
 }

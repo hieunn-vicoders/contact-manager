@@ -3,6 +3,7 @@
 namespace VCComponent\Laravel\Contact\Http\Controllers\Api\Frontend;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use VCComponent\Laravel\Contact\Repositories\ContactRepository;
 use VCComponent\Laravel\Contact\Transformers\ContactTransformer;
 use VCComponent\Laravel\Contact\Validators\ContactValidator;
@@ -30,7 +31,7 @@ class ContactController extends ApiController
 
         if (!empty(config('contact.auth_middleware.frontend'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('manage-contact')) {
+            if (Gate::forUser($user)->denies('manage', $this->entity)) {
                 throw new PermissionDeniedException();
             }
 

@@ -34,7 +34,7 @@ class ContactController extends ApiController
         }
         if (!empty(config('contact.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
-            if (Gate::forUser($user)->denies('manage-contact')) {
+            if (Gate::forUser($user)->denies('manage', $this->entity)) {
                 throw new PermissionDeniedException();
             }
 
